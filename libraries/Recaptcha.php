@@ -14,6 +14,9 @@ class Recaptcha
      *
      */
     private $_ci;
+    private $_siteKey;
+    private $_secretKey;
+    private $_language;
 
     /**
      * reCAPTCHA site up, verify and api url.
@@ -150,26 +153,26 @@ class Recaptcha
      * data-theme: dark|light
      * data-type: audio|image
      *
-     * @param array parameters.
+     * @param array extra_attributes.
+     * @param array extra_css_classes.
      *
      * @return scripts
      */
-    public function getWidget(array $parameters = array())
+    public function getWidget(array $extra_attributes = [], array $extra_css_classes = [])
     {
-        $default = array(
+        $default = [
             'data-sitekey' => $this->_siteKey,
             'data-theme' => 'light',
             'data-type' => 'image',
             'data-size' => 'normal',
-        );
+            'class' => join(' ', array_merge(['g-recaptcha'], $extra_css_classes))
+        ];
 
-        $result = array_merge($default, $parameters);
-
-        $html = '';
-        foreach ($result as $key => $value) {
-            $html .= sprintf('%s="%s" ', $key, $value);
+        $attributes_str = '';
+        foreach (array_merge($default, $extra_attributes) as $key => $value) {
+            $attributes_str .= sprintf(' %s="%s"', $key, htmlspecialchars($value));
         }
 
-        return '<div class="g-recaptcha" '.$html.'></div>';
+        return '<div'.$attributes_str.'></div>';
     }
 }
